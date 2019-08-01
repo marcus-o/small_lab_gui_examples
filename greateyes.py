@@ -5,38 +5,38 @@ import datetime
 import matplotlib.pyplot as plt
 import h5py
 
-from modules.helper import bokeh_gui_helper as bgh
-from modules.helper import measurement
+from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import measurement
 
 import bokeh
 
 # for the lab
-# from modules.digitizers.digitizer_fast_mcs6a import mcs6a
-# from modules.axes.linear_axis_jena_eda4 import linear_axis_controller_jena_eda4
-# from modules.axes.linear_axis_jena_eda4 import linear_axis_piezojena_eda4
+# from small_lab_gui.digitizers.digitizer_fast_mcs6a import mcs6a
+# from small_lab_gui.axes.linear_axis_jena_eda4 import linear_axis_controller_jena_eda4
+# from small_lab_gui.axes.linear_axis_jena_eda4 import linear_axis_piezojena_eda4
 
 testing = True
 if not testing:
     # for the lab
-    from modules.digitizers.digitizer_greateyes_camera import greateyes
-    from modules.digitizers.digitizer_camera_dummy import camera_dummy_roi \
+    from small_lab_gui.digitizers.digitizer_greateyes_camera import greateyes
+    from small_lab_gui.digitizers.digitizer_camera_dummy import camera_dummy_roi \
         as camera_dummy_roi
-    from modules.axes.linear_axis_jena_eda4 import \
+    from small_lab_gui.axes.linear_axis_jena_eda4 import \
         linear_axis_controller_jena_eda4
-    from modules.axes.linear_axis_jena_eda4 import \
+    from small_lab_gui.axes.linear_axis_jena_eda4 import \
         linear_axis_piezojena_eda4
-    from modules.helper.postToELOG import elog
+    from small_lab_gui.helper.postToELOG import elog
 else:
     # for testing
-    from modules.digitizers.digitizer_camera_dummy import camera_dummy \
+    from small_lab_gui.digitizers.digitizer_camera_dummy import camera_dummy \
         as greateyes
-    from modules.digitizers.digitizer_camera_dummy import camera_dummy_roi \
+    from small_lab_gui.digitizers.digitizer_camera_dummy import camera_dummy_roi \
         as camera_dummy_roi
-    from modules.axes.linear_axis_dummy import linear_axis_controller_dummy \
+    from small_lab_gui.axes.linear_axis_dummy import linear_axis_controller_dummy \
         as linear_axis_controller_jena_eda4
-    from modules.axes.linear_axis_dummy import linear_axis_dummy \
+    from small_lab_gui.axes.linear_axis_dummy import linear_axis_dummy \
         as linear_axis_piezojena_eda4
-    from modules.helper.postToELOG_dummy import elog_dummy as elog
+    from small_lab_gui.helper.postToELOG_dummy import elog_dummy as elog
 
 
 class continuous_acquisition_gui():

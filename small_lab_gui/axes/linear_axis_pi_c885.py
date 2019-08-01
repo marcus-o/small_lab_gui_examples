@@ -1,6 +1,6 @@
 # implement a physikinstrumente gcs controller
-from modules.axes.linear_axis import linear_axis_controller
-from modules.axes.linear_axis import linear_axis
+from small_lab_gui.axes.linear_axis import linear_axis_controller
+from small_lab_gui.axes.linear_axis import linear_axis
 
 import pipython
 import pipython.pitools

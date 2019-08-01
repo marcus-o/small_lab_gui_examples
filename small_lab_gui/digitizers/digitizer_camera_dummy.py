@@ -1,4 +1,4 @@
-from modules.digitizers.digitizer import digitizer
+from small_lab_gui.digitizers.digitizer import digitizer
 
 import numpy as np
 import time

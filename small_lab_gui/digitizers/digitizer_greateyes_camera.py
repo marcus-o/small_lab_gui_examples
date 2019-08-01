@@ -1,12 +1,12 @@
-from modules.digitizers.digitizer import digitizer
-from modules.company_dll.greateyes_wrapper import greatEyesDll
+from small_lab_gui.digitizers.digitizer import digitizer
+from small_lab_gui.company_dll.greateyes_wrapper import greatEyesDll
 
 from math import floor
 from threading import Event
 
 
 class greateyes(digitizer):
-    def __init__(self, path='C:\\Users\\Labor\\Documents\\python\\modules\\company_dll\\greateyes_sdk\\c\\bin\\x64'):
+    def __init__(self, path='C:\\Users\\Labor\\Documents\\python\\small_lab_gui\\company_dll\\greateyes_sdk\\c\\bin\\x64'):
         self.num_sensors = 1
         self.ge = greatEyesDll(path, 1)
         if self.ge.GetNumberOfConnectedCams():

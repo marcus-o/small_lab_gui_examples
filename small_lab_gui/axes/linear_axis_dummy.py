@@ -1,5 +1,5 @@
-from modules.axes.linear_axis import linear_axis_controller
-from modules.axes.linear_axis import linear_axis
+from small_lab_gui.axes.linear_axis import linear_axis_controller
+from small_lab_gui.axes.linear_axis import linear_axis
 
 
 class linear_axis_controller_dummy(linear_axis_controller):

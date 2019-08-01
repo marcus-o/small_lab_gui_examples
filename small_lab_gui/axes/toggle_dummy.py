@@ -1,5 +1,5 @@
-from modules.axes.toggle import toggle_controller
-from modules.axes.toggle import toggle_axis
+from small_lab_gui.axes.toggle import toggle_controller
+from small_lab_gui.axes.toggle import toggle_axis
 
 
 class toggle_controller_dummy(toggle_controller):

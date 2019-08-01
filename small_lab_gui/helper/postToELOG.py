@@ -7,7 +7,7 @@ class elog:
     a=elog(host='localhost', port=8080, logbook='demo')
     a.post(
         author='marcus', subject='neu', text='hello',
-        filename='modules/testfile.png')
+        filename='small_lab_gui/testfile.png')
     """
     def __init__(self, host='localhost', logbook='demo', port=8080):
         self.url = 'http://'+host+':'+str(port)+'/'+logbook

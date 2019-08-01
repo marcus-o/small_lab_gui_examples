@@ -7,21 +7,21 @@ import bokeh.plotting
 
 import jinja2
 
-from modules.helper import measurement
-from modules.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import measurement
+from small_lab_gui.helper import bokeh_gui_helper as bgh
 
 testing = True
 if not testing:
     # for the lab
-    from modules.digitizers.digitizer_pfeiffer_tpg366 \
+    from small_lab_gui.digitizers.digitizer_pfeiffer_tpg366 \
         import pressure_controller_pfeiffer_tpg366
-    from modules.axes.toggle_conrad_197720 \
+    from small_lab_gui.axes.toggle_conrad_197720 \
         import toggle_controller_conrad_197720
 else:
     # for testing
-    from modules.digitizers.digitizer_pfeiffer_tpg366_dummy \
+    from small_lab_gui.digitizers.digitizer_pfeiffer_tpg366_dummy \
         import pressure_controller_pfeiffer_tpg366_dummy as pressure_controller_pfeiffer_tpg366
-    from modules.axes.toggle_dummy import toggle_controller_dummy \
+    from small_lab_gui.axes.toggle_dummy import toggle_controller_dummy \
         as toggle_controller_conrad_197720
 
 template = jinja2.Template('''<!DOCTYPE html>

@@ -7,18 +7,18 @@ import copy
 import bokeh
 import h5py
 
-from modules.helper import bokeh_gui_helper as bgh
-from modules.helper import measurement
-from modules.helper import fourierAndAxis
+from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import measurement
+from small_lab_gui.helper import fourierAndAxis
 
 testing = True
 if not testing:
     # for the lab
-    from modules.digitizers.digitizer_oceanoptics_spectrometer \
+    from small_lab_gui.digitizers.digitizer_oceanoptics_spectrometer \
         import oceanoptics_spectrometer
 else:
     # for testing
-    from modules.digitizers.digitizer_oceanoptics_spectrometer_dummy \
+    from small_lab_gui.digitizers.digitizer_oceanoptics_spectrometer_dummy \
         import oceanoptics_spectrometer_dummy as oceanoptics_spectrometer
 
 

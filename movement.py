@@ -1,17 +1,17 @@
 import bokeh
 from functools import partial
 
-from modules.helper import bokeh_gui_helper as bgh
-from modules.helper import asynczmq
-from modules.helper import measurement
+from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import asynczmq
+from small_lab_gui.helper import measurement
 
 # for the lab
-# from modules.axes.linear_axis_pi_c885 import linear_axis_controller_pimicosc885
-# from modules.axes.linear_axis_pi_c885 import linear_axis_pimicosc885
+# from small_lab_gui.axes.linear_axis_pi_c885 import linear_axis_controller_pimicosc885
+# from small_lab_gui.axes.linear_axis_pi_c885 import linear_axis_pimicosc885
 
 # for testing
-from modules.axes.linear_axis_dummy import linear_axis_controller_dummy as linear_axis_controller_pimicosc885
-from modules.axes.linear_axis_dummy import linear_axis_dummy as linear_axis_pimicosc885
+from small_lab_gui.axes.linear_axis_dummy import linear_axis_controller_dummy as linear_axis_controller_pimicosc885
+from small_lab_gui.axes.linear_axis_dummy import linear_axis_dummy as linear_axis_pimicosc885
 
 
 class axis_gui():

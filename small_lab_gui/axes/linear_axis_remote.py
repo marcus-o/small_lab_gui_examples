@@ -1,8 +1,8 @@
 # implement a remote axis controller
-from modules.axes.linear_axis import linear_axis_controller
-from modules.axes.linear_axis import linear_axis
+from small_lab_gui.axes.linear_axis import linear_axis_controller
+from small_lab_gui.axes.linear_axis import linear_axis
 
-from modules.helper import asynczmq
+from small_lab_gui.helper import asynczmq
 
 
 class linear_axis_controller_remote(linear_axis_controller):

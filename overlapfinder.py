@@ -1,7 +1,7 @@
-from modules.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_gui_helper as bgh
 
-from modules.axes.linear_axis_remote import linear_axis_controller_remote
-from modules.axes.linear_axis_remote import linear_axis_remote
+from small_lab_gui.axes.linear_axis_remote import linear_axis_controller_remote
+from small_lab_gui.axes.linear_axis_remote import linear_axis_remote
 
 import bokeh
 import bokeh.layouts

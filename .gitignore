@@ -1,8 +1,10 @@
-modules/company_dll/
+small_lab_gui/company_dll/
 *.bat
 old/
 .DS_Store
 *.DS_Store
+2019*
+2020*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

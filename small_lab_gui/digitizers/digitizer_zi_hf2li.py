@@ -1,5 +1,5 @@
 # digitizer class for zurich instrument's hf2li lockin
-from modules.digitizers.digitizer import digitizer
+from small_lab_gui.digitizers.digitizer import digitizer
 
 import numpy as np
 import time

@@ -7,27 +7,27 @@ import h5py
 
 import bokeh
 
-from modules.helper import bokeh_gui_helper as bgh
-from modules.helper import measurement
+from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import measurement
 
 testing = True
 if not testing:
     # for the lab
-    from modules.digitizers.digitizer_zi_hf2li import hf2li
-    from modules.axes.linear_axis_jena_eda4 import \
+    from small_lab_gui.digitizers.digitizer_zi_hf2li import hf2li
+    from small_lab_gui.axes.linear_axis_jena_eda4 import \
         linear_axis_controller_jena_eda4
-    from modules.axes.linear_axis_jena_eda4 import \
+    from small_lab_gui.axes.linear_axis_jena_eda4 import \
         linear_axis_piezojena_eda4
-    from modules.helper.postToELOG import elog
+    from small_lab_gui.helper.postToELOG import elog
 else:
     # for testing
-    from modules.digitizers.digitizer_zi_hf2li_dummy import hf2li_dummy \
+    from small_lab_gui.digitizers.digitizer_zi_hf2li_dummy import hf2li_dummy \
         as hf2li
-    from modules.axes.linear_axis_dummy import linear_axis_controller_dummy \
+    from small_lab_gui.axes.linear_axis_dummy import linear_axis_controller_dummy \
         as linear_axis_controller_jena_eda4
-    from modules.axes.linear_axis_dummy import linear_axis_dummy \
+    from small_lab_gui.axes.linear_axis_dummy import linear_axis_dummy \
         as linear_axis_piezojena_eda4
-    from modules.helper.postToELOG_dummy import elog_dummy as elog
+    from small_lab_gui.helper.postToELOG_dummy import elog_dummy as elog
 
 
 class lockin_alignment_gui():

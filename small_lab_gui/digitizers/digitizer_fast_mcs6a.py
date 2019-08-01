@@ -1,9 +1,9 @@
-from modules.digitizers.digitizer import digitizer
+from small_lab_gui.digitizers.digitizer import digitizer
 
 import numpy as np
 import time
 from threading import Event
-from modules.company_dll.fast_mcs6a_wrapper import mcs6aDll
+from small_lab_gui.company_dll.fast_mcs6a_wrapper import mcs6aDll
 
 
 class mcs6a(digitizer):
