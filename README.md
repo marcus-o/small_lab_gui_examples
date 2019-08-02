@@ -1,5 +1,5 @@
 # small_lab_gui_examples
-This repository contains exemplary single-user GUIs for small measurements and laboratory control. The goal of these is not to provide a fully integrated framework for creating GUIs, but some examples of how to use bokeh to create small programs acquiring and displaying data. The code is far from optimal and only implements a small subset of bokeh's and most devices' functions. It is provided as is without any warranty.
+This repository contains exemplary single-user GUIs for small measurements and laboratory control. The goal of these is not to provide a fully integrated framework for creating GUIs, but some examples of how to use bokeh to create small programs acquiring and displaying data. The code is far from optimal and only implements a small subset of bokeh's and most devices' functions. It is provided as is without any warranty. I will answer questions sent to marcus.ossiander@gmail.com.
 
 ## tof
 A program that performs a pump-probe experiment by driving a piezo and reading out the results of a time-of-flight spectrometer digitized via a time-to-digital converter.
