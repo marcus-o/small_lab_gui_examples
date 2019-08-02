@@ -54,8 +54,8 @@ Base structure for a linearly moving axis and controller. First intialize a cont
 Base structure for a moving device with two states. First intialize a controller that handles the connection and then add one or more toggles. Example for a Conrad delay card.
 
 # todo currently
-*Add doc strings
-*Add minimal examples
-*Add possibility to simultaneously acquire data in measurement
-*Change sleeps in devices to asynchronus sleeps / avoid blocking async flow
+* Add doc strings
+* Add minimal examples
+* Add possibility to simultaneously acquire data in measurement
+* Change sleeps in devices to asynchronus sleeps / avoid blocking async flow
 
