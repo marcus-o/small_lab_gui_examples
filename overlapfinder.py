@@ -1,4 +1,5 @@
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 
 from small_lab_gui.axes.linear_axis_remote import linear_axis_controller_remote
 from small_lab_gui.axes.linear_axis_remote import linear_axis_remote

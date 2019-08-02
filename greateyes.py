@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 from small_lab_gui.helper import measurement
 
 import bokeh
@@ -48,7 +49,7 @@ class continuous_acquisition_gui():
         self.roi = roi
 
         # pcolor plot to display results
-        self.imagePlot = bgh.plot_false_color()
+        self.imagePlot = bph.plot_false_color()
         self.imagePlot.image()
 
         # Set up widgets
@@ -146,7 +147,7 @@ class continuous_spectrum_gui(continuous_acquisition_gui):
     def __init__(self, doc, sensor, running, roi):
         super().__init__(doc, sensor, running, roi)
         # spectrum source and line plot instead of image plot
-        self.linePlot = bgh.plot_2d()
+        self.linePlot = bph.plot_2d()
         self.linePlot.line(legend='Spectrum')
 
         # save button

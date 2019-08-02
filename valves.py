@@ -9,6 +9,7 @@ import jinja2
 
 from small_lab_gui.helper import measurement
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 
 testing = True
 if not testing:

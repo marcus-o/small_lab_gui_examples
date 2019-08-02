@@ -8,6 +8,7 @@ import h5py
 import bokeh
 
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 from small_lab_gui.helper import measurement
 
 testing = True
@@ -138,11 +139,11 @@ class lockin_measurement_gui(lockin_alignment_gui):
         self.logbook = logbook
 
         # measurement source and line plot
-        self.linePlot = bgh.plot_2d()
+        self.linePlot = bph.plot_2d()
         self.linePlot.line(legend='Current 2', line_color='red')
         self.linePlot.line(legend='Current 5', line_color='blue')
 
-        self.linePlotMean = bgh.plot_2d()
+        self.linePlotMean = bph.plot_2d()
         self.linePlotMean.line(legend='Current 2', line_color='red')
         self.linePlotMean.line(legend='Current 5', line_color='blue')
 

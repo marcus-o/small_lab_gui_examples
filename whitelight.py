@@ -8,6 +8,7 @@ import bokeh
 import h5py
 
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 from small_lab_gui.helper import measurement
 from small_lab_gui.helper import fourierAndAxis
 
@@ -43,7 +44,7 @@ class whitelight_alignment_gui():
         self.integrationInput = bokeh.models.widgets.TextInput(
             title='Integration time [msec]', value='13')
 
-        self.linePlot = bgh.plot_2d()
+        self.linePlot = bph.plot_2d()
         self.linePlot.line(legend='Current', line_color='red')
 
         # save button
@@ -146,9 +147,9 @@ class whitelight_measurement_gui(whitelight_alignment_gui):
         self.linePlot.line(legend='B', line_color='green')
         self.linePlot.line(legend='A+B', line_color='black')
 
-        self.linePlot2 = bgh.plot_2d()
+        self.linePlot2 = bph.plot_2d()
         self.linePlot2.line(legend='GD', line_color='red')
-        self.linePlot3 = bgh.plot_2d()
+        self.linePlot3 = bph.plot_2d()
         self.linePlot3.line(legend='FFT', line_color='red')
 
         self.BGBtn = bokeh.models.widgets.Toggle(label='Background')

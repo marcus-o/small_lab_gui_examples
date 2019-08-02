@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bph
 from small_lab_gui.helper import measurement
 
 import bokeh
@@ -63,7 +64,7 @@ class tof_alignment_gui():
             title='Piezo Position [um]', value='1.0')
 
         # spectrum plot
-        self.linePlot = bgh.plot_2d()
+        self.linePlot = bph.plot_2d()
         self.linePlot.line(legend='Current')
 
         # save button
@@ -158,7 +159,7 @@ class tof_measurement_gui(tof_alignment_gui):
         self.title = 'Measurement'
 
         # pcolor plot to display results
-        self.imagePlot = bgh.plot_false_color()
+        self.imagePlot = bph.plot_false_color()
         self.imagePlot.image()
 
         # scan table button

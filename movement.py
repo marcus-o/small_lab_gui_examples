@@ -2,6 +2,7 @@ import bokeh
 from functools import partial
 
 from small_lab_gui.helper import bokeh_gui_helper as bgh
+from small_lab_gui.helper import bokeh_plot_helper as bgh
 from small_lab_gui.helper import asynczmq
 from small_lab_gui.helper import measurement
 
