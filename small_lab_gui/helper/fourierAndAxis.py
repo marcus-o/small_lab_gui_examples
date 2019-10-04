@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class fieldToFrequencyDomain:
@@ -68,25 +69,33 @@ class getEnvelope(fieldToFrequencyDomain):
     """calculates the envelope of an oscillating signal by subtracting the
     carrier frequency, which can be given or will be determined"""
     def __init__(self, timeAxisV, signalTimeDomainV, carrierFrequencyS=None):
+        # get spectral domain data
         super().__init__(timeAxisV, signalTimeDomainV)
-
+        # eliminate negative frequencies
         self.signalFrequencyDomainV[self.frequencyAxisV < 0] = 0
         # if carrier is requested, use it, otherwise find best one
         if carrierFrequencyS:
             self.carrierFrequencyS = carrierFrequencyS
-        self.carrierFrequencyS = (
-            np.trapz(self.signalFrequencyDomainAbsPosV
-                     * self.frequencyAxisPosV, self.frequencyAxisPosV))
+        else:
+            self.carrierFrequencyS = (
+                np.trapz(
+                    self.signalFrequencyDomainAbsPosV**2
+                    * self.frequencyAxisPosV,
+                    self.frequencyAxisPosV)
+                / np.trapz(
+                    self.signalFrequencyDomainAbsPosV**2,
+                    self.frequencyAxisPosV))
+        # put the carrier as close as possible to zero frequency
         self.signalFrequencyDomainV = (
-            2*(np.roll((
-                self.signalFrequencyDomainV),
-                np.argmin(np.abs(self.frequencyAxisV
-                                 - self.carrierFrequencyS)))))
+            2*(np.roll(
+                self.signalFrequencyDomainV,
+                -np.argmin(np.abs(self.frequencyAxisV
+                                  - self.carrierFrequencyS)))))
+        # get the time domain result
         backTransform = fullSpectrumToTimeDomain(
             self.frequencyAxisV,
             self.signalFrequencyDomainV,
             np.min(self.timeAxisV))
-
         self.timeAxisV = backTransform.timeAxisV
         self.envelopeV = np.abs(backTransform.signalTimeDomainComplexV)
         self.envelopePhaseV = np.angle(backTransform.signalTimeDomainComplexV)
