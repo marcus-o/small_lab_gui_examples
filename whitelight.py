@@ -55,7 +55,7 @@ class whitelight_alignment_gui():
             title='Legend Name', value='Name')
 
         # arrange layout
-        self.inputs = bokeh.layouts.widgetbox(
+        self.inputs = bokeh.layouts.Column(
             self.startBtn, self.integrationInput,
             self.saveBtn, self.saveNameInput)
         self.layout = bokeh.layouts.row(
@@ -161,7 +161,7 @@ class whitelight_measurement_gui(whitelight_alignment_gui):
             title='Save Filename', value='Name')
 
         # arrange items
-        self.inputs = bokeh.layouts.widgetbox(
+        self.inputs = bokeh.layouts.Column(
             self.startBtn, self.integrationInput,
             self.BGBtn, self.ABtn, self.BBtn, self.ABBtn,
             self.saveBtn, self.saveNameInput)
@@ -257,7 +257,9 @@ class whitelight_measurement_gui(whitelight_alignment_gui):
                 # plot fft
                 f = 3e8/(w*1e-9)/1e15
                 curr = (i-self.BG)/(f**2)
-                new_frequency, new_spec = fourierAndAxis.fixPosAxis(f, curr)
+                win = np.hamming(len(curr))
+                new_frequency, new_spec = fourierAndAxis.fixPosAxis(
+                    f, curr*win)
                 ftSig = fourierAndAxis.positiveSpectrumToTimeDomain(
                     new_frequency, new_spec)
                 self.fftaxis = ftSig.timeAxisV
