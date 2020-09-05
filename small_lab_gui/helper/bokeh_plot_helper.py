@@ -52,20 +52,23 @@ class source_2d(plot):
         self.y = y
 
 
-# 2d plot helper class
-class plot_2d(plot):
-    def __init__(self, title='', height=256, width=1024, max_refresh=0.05):
+# 1d plot helper class
+class plot_1d(plot):
+    def __init__(self, title='', height=256, width=1024, max_refresh=0.05, mm=False):
         # plot
         self.height = height
         self.width = width
         self.max_refresh = max_refresh
+        self.mm=mm
         self.lastrefresh = []
 
         self.plot = bokeh.plotting.figure(
             plot_height=height, plot_width=width,
             title=title,
-            tools='crosshair,reset,save,box_zoom,box_select,pan,wheel_zoom'
-            )
+            tools='crosshair,reset,save,box_zoom,box_select,pan,wheel_zoom,zoom_in,xzoom_in,yzoom_in,zoom_out,xzoom_out,yzoom_out',
+            toolbar_location="below", toolbar_sticky=False)
+        # self.plot.add_tools(HoverTool(tooltips=[("(x,y)", "($x, $y)"),], mode='vline'))
+
         self.plot.x_range = bokeh.models.Range1d(-1e9, 1e9)
         self.plot.y_range = bokeh.models.Range1d(-1e9, 1e9)
         # autoscale buttons
@@ -81,9 +84,147 @@ class plot_2d(plot):
         self.element = bokeh.layouts.column(
             self.plot,
             bokeh.layouts.row(
-                bokeh.layouts.widgetbox(self.autoscaleXBtn),
-                bokeh.layouts.widgetbox(self.autoscaleYBtn),
-                bokeh.layouts.widgetbox(self.replotBtn)))
+                bokeh.layouts.Column(self.autoscaleXBtn),
+                bokeh.layouts.Column(self.autoscaleYBtn),
+                bokeh.layouts.Column(self.replotBtn)))
+
+        self.sources = []
+        self.lines = []
+        self.x_scales = []
+        self.data_y = []
+
+    def line(self, legend='', line_color='blue'):
+        # create source and plot
+        source = source_2d([], [])
+        line = self.plot.step(
+            x='x', y='y', source=source.source,
+            legend_label=legend, line_color=line_color, mode="center")
+        # save plot and source
+        self.sources.append(source)
+        self.lines.append(line)
+        self.lastrefresh.append(0)
+        # legend policy
+        self.plot.legend.location = 'top_left'
+        self.plot.legend.click_policy = 'hide'
+
+        self.x_scales.append([])
+        self.data_y.append([])
+
+    def save_current(self, name, num=0):
+        # create source and plot
+        cnt = len(self.plot.select(
+            type=bokeh.models.renderers.GlyphRenderer))
+        self.plot.line(
+            x=self.data_x[num],
+            y=self.data_y[num],
+            level='underlay',
+            line_color=bokeh.palettes.Category10[10][cnt % 10],
+            legend=dict(value=name))
+
+    def autoscale(self, checkBtn=True):
+        if self.autoscaleXBtn.active or (not checkBtn):
+            xmax = -np.inf
+            xmin = np.inf
+            for elem, scale in zip(self.data_y, self.x_scales):
+                if len(elem):
+                    if len(elem) > xmax:
+                        xmax = len(elem)*scale
+                    xmin = 0
+            if xmax-xmin == 0:
+                self.set_bounds(
+                    xmax=xmax + 1,  # + (xmax-xmin)/10,
+                    xmin=xmin - 1)  # - (xmax-xmin)/10)
+            else:
+                self.set_bounds(
+                    xmax=xmax,  # + (xmax-xmin)/10,
+                    xmin=xmin)  # - (xmax-xmin)/10)
+        if self.autoscaleYBtn.active or (not checkBtn):
+            ymax = -np.inf
+            ymin = np.inf
+            for elem in self.data_y:
+                if len(elem):
+                    if np.max(elem) > ymax:
+                        ymax = np.max(elem)
+                    if np.min(elem) < ymin:
+                        ymin = np.min(elem)
+            if ymax-ymin == 0:
+                self.set_bounds(
+                    ymax=ymax + 1,
+                    ymin=ymin - 1)
+            else:
+                self.set_bounds(
+                    ymax=ymax + (ymax-ymin)/10,
+                    ymin=ymin - (ymax-ymin)/10)
+
+    def update_all(self):
+        for cnt, _ in enumerate(self.lines):
+            self.update(num=cnt)
+
+    def update(self, x_scale=None, y=None, num=0,
+               max_length_x=None, max_length_y=None):
+        # load old data if no new data is sent
+        if x_scale is None:
+            x_scale = self.x_scales[num]
+        if y is None:
+            y = self.data_y[num]
+        # check if everything is a numpy array
+        y = np.array(y)
+
+        # save the full data
+        self.x_scales[num] = x_scale
+        self.data_y[num] = y
+
+        if time.time() - self.lastrefresh[num] > self.max_refresh:
+            # handle autoscaling before cutting
+            self.autoscale()
+
+            if max_length_x is None:
+                max_length_x = self.width
+            else:
+                max_length_x = np.min([self.width, max_length_x])
+                
+            x, y = reduce_x_1d_no_y(x_scale,
+                y, max_length_x,
+                self.plot.x_range.start, self.plot.x_range.end, mm=self.mm)
+
+            self.sources[num].update(x, y)
+            self.lastrefresh[num] = time.time()
+
+
+# 2d plot helper class
+class plot_2d(plot):
+    def __init__(self, title='', height=256, width=1024, max_refresh=0.05, mm=False):
+        # plot
+        self.height = height
+        self.width = width
+        self.max_refresh = max_refresh
+        self.mm=mm
+        self.lastrefresh = []
+
+        self.plot = bokeh.plotting.figure(
+            plot_height=height, plot_width=width,
+            title=title,
+            tools='crosshair,reset,save,box_zoom,box_select,pan,wheel_zoom,zoom_in,xzoom_in,yzoom_in,zoom_out,xzoom_out,yzoom_out',
+            toolbar_location="below", toolbar_sticky=False)
+
+        self.plot.x_range = bokeh.models.Range1d(-1e9, 1e9)
+        self.plot.y_range = bokeh.models.Range1d(-1e9, 1e9)
+        # autoscale buttons
+        self.autoscaleXBtn = bokeh.models.Toggle(
+            label='Autoscale X', active=True, width=int(np.floor(width/6)))
+        self.autoscaleYBtn = bokeh.models.Toggle(
+            label='Autoscale Y', active=True, width=int(np.floor(width/6)))
+        # replot button
+        self.replotBtn = bokeh.models.Button(
+            label='Replot', width=int(np.floor(width/6)))
+        self.replotBtn.on_click(lambda inp1: self.update_all())
+
+        self.element = bokeh.layouts.column(
+            self.plot,
+            bokeh.layouts.row(
+                bokeh.layouts.Column(self.autoscaleXBtn),
+                bokeh.layouts.Column(self.autoscaleYBtn),
+                bokeh.layouts.Column(self.replotBtn)))
 
         self.sources = []
         self.lines = []
@@ -95,7 +236,7 @@ class plot_2d(plot):
         source = source_2d(x, y)
         line = self.plot.step(
             x='x', y='y', source=source.source,
-            legend=legend, line_color=line_color, mode="center")
+            legend_label=legend, line_color=line_color, mode="center")
         # save plot and source
         self.sources.append(source)
         self.lines.append(line)
@@ -128,9 +269,14 @@ class plot_2d(plot):
                         xmax = np.max(elem)
                     if np.min(elem) < xmin:
                         xmin = np.min(elem)
-            self.set_bounds(
-                xmax=xmax,  # + (xmax-xmin)/10,
-                xmin=xmin)  # - (xmax-xmin)/10)
+            if xmax-xmin == 0:
+                self.set_bounds(
+                    xmax=xmax + 1,  # + (xmax-xmin)/10,
+                    xmin=xmin - 1)  # - (xmax-xmin)/10)
+            else:
+                self.set_bounds(
+                    xmax=xmax,  # + (xmax-xmin)/10,
+                    xmin=xmin)  # - (xmax-xmin)/10)
         if self.autoscaleYBtn.active or (not checkBtn):
             ymax = -np.inf
             ymin = np.inf
@@ -140,9 +286,14 @@ class plot_2d(plot):
                         ymax = np.max(elem)
                     if np.min(elem) < ymin:
                         ymin = np.min(elem)
-            self.set_bounds(
-                ymax=ymax + (ymax-ymin)/10,
-                ymin=ymin - (ymax-ymin)/10)
+            if ymax-ymin == 0:
+                self.set_bounds(
+                    ymax=ymax + 1,
+                    ymin=ymin - 1)
+            else:
+                self.set_bounds(
+                    ymax=ymax + (ymax-ymin)/10,
+                    ymin=ymin - (ymax-ymin)/10)
 
     def update_all(self):
         for cnt, _ in enumerate(self.lines):
@@ -175,10 +326,10 @@ class plot_2d(plot):
                 max_length_x = self.width
             else:
                 max_length_x = np.min([self.width, max_length_x])
-
+                
             x, y = reduce_x_1d(
                 x, y, max_length_x,
-                self.plot.x_range.start, self.plot.x_range.end)
+                self.plot.x_range.start, self.plot.x_range.end, mm=self.mm)
 
             self.sources[num].update(x, y)
             self.lastrefresh[num] = time.time()
@@ -257,11 +408,11 @@ class plot_false_color(plot_2d):
         self.element = bokeh.layouts.column(
             self.plot,
             bokeh.layouts.row(
-                bokeh.layouts.widgetbox(self.colorscaleSilder),
-                bokeh.layouts.widgetbox(self.autoscaleXBtn),
-                bokeh.layouts.widgetbox(self.autoscaleYBtn),
-                bokeh.layouts.widgetbox(self.autoscaleZBtn),
-                bokeh.layouts.widgetbox(self.replotBtn)))
+                bokeh.layouts.Column(self.colorscaleSilder),
+                bokeh.layouts.Column(self.autoscaleXBtn),
+                bokeh.layouts.Column(self.autoscaleYBtn),
+                bokeh.layouts.Column(self.autoscaleZBtn),
+                bokeh.layouts.Column(self.replotBtn)))
 
         self.sources = []
         self.images = []
@@ -319,13 +470,22 @@ class plot_false_color(plot_2d):
                     zmin = np.min(np.min(elem))
 
         # update range slider
-        self.colorscaleSilder.start = zmin
-        self.colorscaleSilder.end = zmax
-        self.colorscaleSilder.step = (zmax - zmin)/1000
+        if (zmax - zmin) == 0:
+            self.colorscaleSilder.start = zmin-1
+            self.colorscaleSilder.end = zmax+1
+            self.colorscaleSilder.step = 1/1000
+        else:
+            self.colorscaleSilder.start = zmin
+            self.colorscaleSilder.end = zmax
+            self.colorscaleSilder.step = (zmax - zmin)/1000
         # update color scale
         if self.autoscaleZBtn.active or (not checkBtn):
-            self.color_mapper.low = zmin
-            self.color_mapper.high = zmax
+            if (zmax - zmin) == 0:
+                self.color_mapper.low = zmin-1
+                self.color_mapper.high = zmax+1
+            else:
+                self.color_mapper.low = zmin
+                self.color_mapper.high = zmax
         else:
             self.color_mapper.low = self.colorscaleSilder.value[0]
             self.color_mapper.high = self.colorscaleSilder.value[1]
@@ -384,15 +544,103 @@ class plot_false_color(plot_2d):
             self.sources[num].update(x, y, z)
             self.lastrefresh[num] = time.time()
 
-
-def reduce_x_1d(x, y, goal_length_x, x_start=-np.inf, x_end=np.inf):
-    return reduce_x_1d_c(
-        np.array(x, dtype='float64'),
-        np.array(y, dtype='float64'),
-        goal_length_x, x_start, x_end)
+    def update_all(self):
+        for cnt, _ in enumerate(self.images):
+            self.update(num=cnt)
 
 
-@jit(nopython=True)
+def reduce_x_1d_no_y(x_scale, y, goal_length_x, x_start=-np.inf, x_end=np.inf, mm=False):
+    if mm: 
+        return reduce_x_1d_c_mm_no_y(
+            x_scale, y,
+            goal_length_x, x_start, x_end)
+    else:
+        return reduce_x_1d_c_no_y(
+            x_scale, y,
+            goal_length_x, x_start, x_end)
+
+
+#@jit
+def reduce_x_1d_c_mm_no_y(x_scale, y, goal_length_x, x_start, x_end):
+    xmin = np.max([int(np.floor(x_start/x_scale)), 0])
+    xmax = np.min([int(np.ceil(x_end/x_scale)), len(y)])
+    y = y[xmin:xmax]
+
+    old_x_size = y.size
+    if (old_x_size > goal_length_x):
+        factor = int(np.floor(old_x_size/goal_length_x))
+        new_x_size = int(np.floor(y.shape[0]/factor))
+        y_disp = np.zeros(new_x_size*2)
+        for cntx in range(new_x_size):
+            y_disp[cntx*2] = y[cntx*factor:(cntx+1)*factor].max()
+            y_disp[cntx*2+1] = y[cntx*factor:(cntx+1)*factor].min()
+        x_disp = np.linspace(xmin*x_scale, xmax*x_scale, len(y_disp))
+    else:
+        x_disp = np.linspace(xmin*x_scale, xmax*x_scale, len(y))
+        y_disp = y
+    return x_disp, y_disp
+
+
+#@jit
+def reduce_x_1d_c_no_y(x_scale, y, goal_length_x, x_start, x_end):
+    xmin = np.max([int(np.floor(x_start/x_scale)), 0])
+    xmax = np.min([int(np.ceil(x_end/x_scale)), len(y)])
+    y = y[xmin:xmax]
+
+    old_x_size = y.size
+    if (old_x_size > goal_length_x):
+        factor = int(np.floor(old_x_size/goal_length_x))
+        new_x_size = int(np.floor(y.shape[0]/factor))
+        y_disp = np.zeros(new_x_size)
+        for cntx in range(new_x_size):
+            y_disp[cntx] = y[cntx*factor:(cntx+1)*factor].sum()
+        x_disp = np.linspace(xmin*x_scale, xmax*x_scale, len(y_disp))
+        y_disp = y_disp/factor
+    else:
+        x_disp = np.linspace(xmin*x_scale, xmax*x_scale, len(y))
+        y_disp = y
+    return x_disp, y_disp
+
+
+def reduce_x_1d(x, y, goal_length_x, x_start=-np.inf, x_end=np.inf, mm=False):
+    if mm:
+        return reduce_x_1d_c_mm(
+            x, y,
+            goal_length_x, x_start, x_end)
+    else:
+        return reduce_x_1d_c(
+            x, y,
+            goal_length_x, x_start, x_end)
+    # needed for jitting
+    # return reduce_x_1d_c(
+    #    np.array(x, dtype='float64'),
+    #    np.array(y, dtype='float64'),
+    #    goal_length_x, x_start, x_end)
+
+#@jit
+def reduce_x_1d_c_mm(x, y, goal_length_x, x_start, x_end):
+    xstep = x[1] - x[0]
+    y = y[(x >= x_start) & (x <= x_end)]
+    x = x[(x >= x_start) & (x <= x_end)]
+
+    old_x_size = x.size
+    if (old_x_size > goal_length_x):
+        factor = int(np.floor(old_x_size/goal_length_x))
+        new_x_size = int(np.floor(x.shape[0]/factor))
+        x_disp = np.zeros(new_x_size*2)
+        y_disp = np.zeros(new_x_size*2)
+        for cntx in range(new_x_size):
+            x_disp[cntx*2] = x[cntx*factor]
+            x_disp[cntx*2+1] = x[cntx*factor] + xstep/2 
+            y_disp[cntx*2] = y[cntx*factor:(cntx+1)*factor].max()
+            y_disp[cntx*2+1] = y[cntx*factor:(cntx+1)*factor].min()
+    else:
+        x_disp = x
+        y_disp = y
+    return x_disp, y_disp
+
+
+#@jit
 def reduce_x_1d_c(x, y, goal_length_x, x_start, x_end):
     y = y[(x >= x_start) & (x <= x_end)]
     x = x[(x >= x_start) & (x <= x_end)]

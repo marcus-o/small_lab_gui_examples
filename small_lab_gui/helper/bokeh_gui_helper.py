@@ -50,19 +50,22 @@ class bokeh_gui_session_handler(bokeh.application.handlers.Handler):
                     child=c['layout'], title=c['title']) for c in self.tabs]
             ))
         doc.title = self.title
+        return doc
 
-    def on_session_destroyed(self, doc):
+    async def on_session_destroyed(self, doc):
         print('closing session')
         self.close_stuff()
         self.destroy_session(doc)
         if self.server is not None:
             self.server.io_loop.stop()
 
+
     def open_session(self, doc):
         pass
 
     def destroy_session(self, doc):
         pass
+
 
     def close_stuff(self):
         for obj in self.close_list:

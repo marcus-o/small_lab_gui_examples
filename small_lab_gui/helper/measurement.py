@@ -87,10 +87,10 @@ class measurement(Thread):
                             if self.save_output:
                                 self.output.append(retlist)
                                 if self.update:
-                                    self.update(self.output)
+                                    self.update(self.output.copy())
                             else:
                                 if self.update:
-                                    self.update(retlist)
+                                    self.update(retlist.copy())
                 # otherwise do an infinite measurement
                 else:
                     # break condition
@@ -108,7 +108,7 @@ class measurement(Thread):
                             if self.save_output:
                                 self.output.append(retlist)
                                 if self.update:
-                                    self.update(self.output)
+                                    self.update(self.output.copy())
                             else:
                                 if self.update:
                                     self.update(retlist)
@@ -141,10 +141,10 @@ def single_input_sequence_function(function):
     return lambda stop_event, inp, init_output: function(inp)
 
 
-def sleep_function(sleetime_sec):
+def sleep_function(sleeptime_sec):
     """return a function that is compatible with measurement class
     and waits sleeptime_sec."""
-    return lambda stop_event, inp, init_output: time.sleep(sleetime_sec)
+    return lambda stop_event, inp, init_output: time.sleep(sleeptime_sec)
 
 
 def bokeh_update_function(update_function, doc):
